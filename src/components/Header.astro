@@ -1,0 +1,21 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const links = [
+  { href: `${base}/`, label: 'Start' },
+  { href: `${base}/projekte`, label: 'Projekte' },
+  { href: `${base}/blog`, label: 'Blog' },
+  { href: `${base}/ueber-mich`, label: 'Über mich' },
+];
+---
+
+<header class="site-header">
+  <nav class="wrapper">
+    <a class="brand" href={`${base}/`}>Lukas Fritsch</a>
+    <ul>
+      {links.map((link) => (
+        <li><a href={link.href}>{link.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>

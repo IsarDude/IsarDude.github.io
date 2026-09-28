@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${project.data.title} — Lukas Fritsch`} description={project.data.description}>
+  <article class="prose">
+    <h1>{project.data.title}</h1>
+    <p class="meta">
+      {project.data.pubDate.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </p>
+    <div>
+      {project.data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+    </div>
+    <Content />
+  </article>
+</BaseLayout>

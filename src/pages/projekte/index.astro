@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout title="Projekte — Lukas Fritsch">
+  <h1>Projekte</h1>
+  {projects.length === 0 && <p class="meta">Noch keine Projekte veröffentlicht.</p>}
+  {projects.map((project) => (
+    <article class="card">
+      <h3><a href={`${base}/projekte/${project.id}`}>{project.data.title}</a></h3>
+      <p>{project.data.description}</p>
+      <div>
+        {project.data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+      </div>
+      <p class="meta">
+        {project.data.link && <a href={project.data.link} target="_blank" rel="noreferrer">Live-Demo</a>}
+        {project.data.link && project.data.repo && ' · '}
+        {project.data.repo && <a href={project.data.repo} target="_blank" rel="noreferrer">Quellcode</a>}
+      </p>
+    </article>
+  ))}
+</BaseLayout>
