@@ -37,17 +37,13 @@ export const LINKS: Links = [
     TEXT: "Home", 
     HREF: "/", 
   },
-  { 
-    TEXT: "Work", 
-    HREF: "/work", 
+  {
+    TEXT: "Work",
+    HREF: "/work",
   },
-  { 
-    TEXT: "Blog", 
-    HREF: "/blog", 
-  },
-  { 
-    TEXT: "Projects", 
-    HREF: "/projects", 
+  {
+    TEXT: "Projects",
+    HREF: "/projects",
   },
 ]
 
@@ -56,8 +52,8 @@ export const SOCIALS: Socials = [
   {
     NAME: "Email",
     ICON: "email",
-    TEXT: "Lukas.fritsch-post@web.de",
-    HREF: "mailto:Lukas.fritsch-post@web.de",
+    TEXT: "gd@fritsch-lukas.de",
+    HREF: "mailto:gd@fritsch-lukas.de",
   },
   {
     NAME: "Github",
