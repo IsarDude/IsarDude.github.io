@@ -1,0 +1,7 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#0f2e2a"/>
+  <circle cx="150" cy="80" r="120" fill="#164a42"/>
+  <text x="48" y="230" font-family="system-ui, sans-serif" font-size="40" fill="#ffffff" font-weight="700">WebGL</text>
+  <text x="48" y="280" font-family="system-ui, sans-serif" font-size="40" fill="#ffffff" font-weight="700">Unity Titles</text>
+  <text x="48" y="330" font-family="system-ui, sans-serif" font-size="20" fill="#8fd9c8">Browser · Load-Time Optimization</text>
+</svg>

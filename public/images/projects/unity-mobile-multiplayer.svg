@@ -1,0 +1,7 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#1d2a4d"/>
+  <circle cx="640" cy="90" r="140" fill="#2c3e6b"/>
+  <text x="48" y="220" font-family="system-ui, sans-serif" font-size="40" fill="#ffffff" font-weight="700">Unity Mobile</text>
+  <text x="48" y="270" font-family="system-ui, sans-serif" font-size="40" fill="#ffffff" font-weight="700">Multiplayer</text>
+  <text x="48" y="320" font-family="system-ui, sans-serif" font-size="20" fill="#9fb3e0">iOS · Android · Networking</text>
+</svg>
