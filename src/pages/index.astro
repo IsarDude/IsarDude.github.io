@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import ArrowCard from "@components/ArrowCard"
-import StackCard from "@components/StackCard.astro"
 import { SITE, SOCIALS } from "@consts"
 import TwinklingStars from "@components/TwinklingStars.astro"
 import MeteorShower from "@components/MeteorShower.astro"
@@ -12,28 +11,6 @@ const projects = (await getCollection("projects"))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0,3)
 
-const stack = [
-  {
-    text: "Astro",
-    icon: "astro",
-    href: "https://astro.build"
-  },
-  {
-    text: "Javascript",
-    icon: "javascript",
-    href: "https://www.javascript.com"
-  },
-  {
-    text: "Typescript",
-    icon: "typescript",
-    href: "https://www.typescriptlang.org"
-  },
-  {
-    text: "Tailwind",
-    icon: "tailwind",
-    href: "https://tailwindcss.com"
-  },
-]
 ---
 
 <PageLayout title="Home" description={SITE.DESCRIPTION}>
@@ -102,37 +79,11 @@ const stack = [
       <!-- About Section -->
       <section class="animate">
         <article>
-          <p>I am a <b><i>gameplay programmer</i></b> specializing in multi-platform architecture: mobile multiplayer (iOS/Android) in Unity, native systems programming in Unreal Engine C++, and performance-constrained WebGL builds.</p>
-          <p>I care about how gameplay systems are architected under the hood — state synchronization, memory management, and performance profiling — not just how they look running in a trailer.</p>
+          <p>I am a <b><i>game programmer</i></b> focused on C++ and Unreal Engine for gameplay and multiplayer systems, with a professional background building Unity multiplayer titles played by millions. I hold a B.Sc. in Media Informatics from the University of Applied Sciences Hof (2022, grade 1.6).</p>
+          <p>I care about how gameplay systems are architected under the hood — replication and client-side prediction, decoupled gameplay/UI subsystems, and clean, testable code — not just how they look running in a trailer.</p>
           <p>During my career</p>
-          <p>I have shipped turn-based multiplayer card games, native Unreal gameplay systems exposed to designers via Blueprints, and browser-optimized WebGL titles.</p>
+          <p>Since January 2023 I have worked as a Unity Developer at GameDuell in Berlin, engineering core multiplayer gameplay mechanics for cross-platform iOS/Android card games (Canasta, Spades, Backgammon), and previously building WebGL titles for a platform with 130M+ users. Alongside that, I build personal C++ and Unreal Engine 5 projects — a data-driven weapon system with tactical AI, and a multiplayer vehicle demo with server-authoritative replication and client-side prediction.</p>
         </article>
-      </section>
-
-      <!-- Tech Stack Section -->
-      <section class="animate">
-        <div class="space-y-4">
-          <p class="font-semibold text-black dark:text-white">
-            Website build with
-          </p>
-          <div class="flex flex-wrap items-center gap-2 mt-5">
-            {stack.map(item => (
-              <StackCard 
-                text={item.text}
-                icon={item.icon}
-                href={item.href}
-              />
-            ))}
-          </div>
-          <div>
-            Performing reactivity and statefulness, special guest
-            <a href="https://www.solidjs.com/" target="_blank" class="w-fit group underline decoration-[.5px] decoration-black/25 dark:decoration-white/50 hover:decoration-black dark:hover:decoration-white text-black dark:text-white underline-offset-2 blend">
-              <span class="text-black/75 dark:text-white/75 group-hover:text-black group-hover:dark:text-white blend">
-                SolidJS
-              </span>
-            </a>
-          </div>
-        </div>
       </section>
 
       <!-- Project Preview Section -->
