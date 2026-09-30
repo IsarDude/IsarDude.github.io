@@ -10,28 +10,28 @@ tags:
   - Multiplayer
   - Professional Project
 image: "/images/projects/canasta-treff/screenshot-1.jpg"
-demoUrl: "https://play.google.com/store/apps/details?id=com.gameduell.canasta.treff.kartenspiel"
+demoUrl: "https://play.google.com/store/apps/details?id=com.gameduell.canasta.treff.kartenspiel&hl=gsw"
 ---
 
 - **Project Type:** Professional project at GameDuell
 - **Platforms:** iOS, Android
-- **My Role:** Unity Programmer
+- **My Role:** Unity Game Programmer
 
-**Canasta Treff** is a free live multiplayer Canasta game. Players compete against real opponents, climb through leagues and work their way up to higher tables. It is live on both stores:
+**Canasta - Fun & Friends** is a free live multiplayer Canasta game. Players compete against real opponents, climb through leagues and work their way up to higher tables. It is live on both stores:
 
-- [Google Play](https://play.google.com/store/apps/details?id=com.gameduell.canasta.treff.kartenspiel&hl=de)
-- [App Store](https://apps.apple.com/de/app/canasta-treff-spa%C3%9F-mit-karten/id6736938797)
+- [Google Play](https://play.google.com/store/apps/details?id=com.gameduell.canasta.treff.kartenspiel&hl=gsw)
+- [App Store](https://apps.apple.com/ch/app/canasta-fun-friends/id6736938797?l=en-GB)
 
 <iframe
   src="https://www.youtube.com/embed/WU7rs2m-HA0"
-  title="Canasta Treff — Trailer"
+  title="Canasta - Fun & Friends — Trailer"
   style="width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 0.5rem;"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   allowfullscreen
   loading="lazy"
 ></iframe>
 
-![Canasta Treff match table](/images/projects/canasta-treff/screenshot-1.jpg)
+![Canasta - Fun & Friends match table](/images/projects/canasta-treff/screenshot-1.jpg)
 
 ## What I Worked On
 
