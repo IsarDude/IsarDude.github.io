@@ -9,7 +9,7 @@ tags:
   - Mobile
   - Multiplayer
   - Professional Project
-image: "/images/projects/canasta-treff/screenshot-1.jpg"
+image: "/images/projects/canasta-treff/icon.jpg"
 demoUrl: "https://play.google.com/store/apps/details?id=com.gameduell.canasta.treff.kartenspiel&hl=gsw"
 ---
 
