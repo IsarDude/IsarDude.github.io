@@ -1,6 +1,6 @@
 ---
 title: "Canasta - Fun & Friends"
-summary: "Mobile multiplayer Canasta for iOS and Android at GameDuell. Play Canasta online against other players, compete in leagues and tournaments, and don't forget to have fun!"
+summary: "Mobile multiplayer Canasta for iOS and Android at GameDuell. I joined for the polishing phase and worked on round result animations, player statistics with Firebase, SFX integration and integration tests."
 date: "2026-09-29"
 draft: false
 tags:
@@ -15,7 +15,9 @@ demoUrl: "https://play.google.com/store/apps/details?id=com.gameduell.canasta.tr
 
 - **Project Type:** Professional project at GameDuell
 - **Platforms:** iOS, Android
-- **My Role:** Unity Game Programmer
+- **My Role:** Unity Game Programmer. I joined the team late, for the polishing stage.
+- **Team:** 3 developers, 2 2D artists, 1 product owner, 1 product manager, 1 UX designer, 1 game designer
+- **Tech:** Unity, C#, Zenject (DI), Firebase, ScriptableObjects, automated integration tests
 
 **Canasta - Fun & Friends** is a free live multiplayer Canasta game. Players compete against real opponents, climb through leagues and work their way up to higher tables. It is live on both stores:
 
@@ -35,13 +37,12 @@ demoUrl: "https://play.google.com/store/apps/details?id=com.gameduell.canasta.tr
 
 ## What I Worked On
 
-I worked as a Unity game programmer. I implemented core game features, wired game data into the UI, and built and set up the Unity prefabs for these features, working closely with our game designers, artists and user experience teams.
+I joined the project during the polishing stage and contributed to the round result screen, player statistics, audio and automated testing.  Working within a large monorepo including shared frontend and backend code as well as shared funcionality between games.
 
-- **First-Time User Experience & Tutorials.** Implemented the logic behind the onboarding user flows and the tutorials, including the step sequencing and the conditions that trigger and complete each step.
-- **Round Result Screen & Match End Effects.** Implemented the round result screen and the match end sequence. I feed match data (scores, winner, XP, rank and coin rewards) into the screens and drive the effects.
-- **Statistics Tracking & Profile Display.** Built the logic that tracks player statistics across matches and the code that displays them in the user profile.
-- **SFX & VFX.** Integrated sound effects and visual effects into the game.
-- **Integration Tests.** Wrote automated integration tests for meta game and core game flows to catch regressions early.
+- **Round Result Screen Polish.** Refined the round result screen by adding event-driven animation triggers and implementing the logic that sets the right animation state at the right moment, with separate winning and losing animations and states.
+- **Player Statistics & Profile.** Implemented the tracking of game-specific player statistics, such as piles frozen, Canastas achieved and highest win, by using and extending the existing tracking framework, and saved the values in Firebase. I also built the data flow that brings these statistics to the player profile UI.
+- **Sound Effects Integration.** Extended the studio's SFX framework and adjusted game-wide import options. ScriptableObjects reference the right sound files, and the SFX service is called at the right moments through Zenject dependency injection.
+- **Integration Tests.** Wrote readable integration tests with an internal testing tool, which I extended where needed. The tests play through the first two games and cover the most important user flows. They only interact with objects that are visible on screen, simulating a real user, and they catch game-breaking bugs early.
 
 ## Screenshots
 
