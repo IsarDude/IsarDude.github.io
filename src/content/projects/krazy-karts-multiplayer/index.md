@@ -29,3 +29,112 @@ image: "/images/projects/krazy-karts.svg"
 **Problem:** Vehicles for remote clients (simulated proxies) only receive position/velocity updates a few times per second (`SetNetUpdateFrequency`), so naively snapping to each new server transform produced visible jitter and teleporting, while the locally-controlled vehicle needed to feel instantly responsive to input despite round-trip latency to the authoritative server.
 
 **Solution:** Split the problem by network role. For the locally-controlled kart, I implemented client-side prediction: input is simulated immediately and stored in an unacknowledged move queue; when the server's authoritative state replicates back, the client resets to that state and replays only the moves the server hasn't yet acknowledged, correcting drift without any visible snap. For remote vehicles, instead of interpolating linearly between two raw positions, I built a Hermite cubic spline from the last known and newly-received transform/velocity pairs, so both position and velocity stay continuous across the interpolation window — this removed the jitter that linear lerp introduced whenever velocity changed between snapshots.
+
+### 1. Predict locally, send every move
+
+Each tick the autonomous proxy builds a timestamped move, simulates it immediately, stores it in the unacknowledged queue, and sends it to the server. The server runs the exact same `SimulateMove`, so both sides stay deterministic. Because the client is untrusted, `Server_SendMove_Validate` rejects moves from clients that try to run ahead of server time.
+
+```cpp
+// GoKartReplicationComponent.cpp — TickComponent
+if (LocalRole == ROLE_AutonomousProxy)
+{
+	FGoKartMove LastMove = GoKartMovementComponent->GetLastMove();
+	AddMove(LastMove);          // remember it until the server acknowledges it
+	Server_SendMove(LastMove);  // authoritative copy runs on the server
+}
+
+// Anti-cheat: a client may not simulate more time than has actually passed.
+bool UGoKartReplicationComponent::Server_SendMove_Validate(FGoKartMove Move)
+{
+	float ProposedTime = ClientSimulatedTime + Move.DeltaTime;
+	bool ClientNotRunningAhead = ProposedTime < GetWorld()->TimeSeconds;
+
+	if (!ClientNotRunningAhead) return false;
+	if (!Move.IsValid()) return false;
+
+	return true;
+}
+```
+
+### 2. Reconcile by replaying unacknowledged moves
+
+When the authoritative state replicates back (`OnRep_ServerState`), the client snaps to the server's transform and velocity, discards every move the server has already processed, and re-simulates the rest on top. The player's input never waits on the network, and any drift is corrected without a visible rubber-band.
+
+```cpp
+void UGoKartReplicationComponent::AutonomousProxy_OnRep_ServerState()
+{
+	if (GoKartMovementComponent == nullptr) return;
+
+	// 1. Rewind to the server's truth
+	GetOwner()->SetActorTransform(ServerState.Transform);
+	GoKartMovementComponent->SetVelocity(ServerState.Velocity);
+
+	// 2. Drop moves the server has already applied
+	ClearAcknowledgedMoves(ServerState.LastMove);
+
+	// 3. Replay everything the server hasn't seen yet
+	for (const FGoKartMove& Move : UnacknowledgedMoveQueue)
+	{
+		GoKartMovementComponent->SimulateMove(Move);
+	}
+}
+
+void UGoKartReplicationComponent::ClearAcknowledgedMoves(const FGoKartMove& LastMove)
+{
+	TArray<FGoKartMove> NewMoves;
+	for (auto Move : UnacknowledgedMoveQueue)
+	{
+		if (Move.MoveTime > LastMove.MoveTime)
+		{
+			NewMoves.Add(Move);
+		}
+	}
+	UnacknowledgedMoveQueue = NewMoves;
+}
+```
+
+### 3. Hermite spline for remote karts
+
+For other players' karts, each snapshot starts a new interpolation segment. The segment begins at where the kart was *drawn* (not where the last snapshot said it was), so there is no pop when a packet arrives. Velocities are fed in as tangents, so speed stays continuous across segments. Rotation uses a Slerp.
+
+```cpp
+// GoKartReplicationComponent.h
+struct FHermiteCubicSpline
+{
+	FVector StartLocation, StartDerivative, TargetLocation, TargetDerivative;
+
+	FVector InterpolateLocation(float LerpRatio) const
+	{
+		return FMath::CubicInterp(StartLocation, StartDerivative, TargetLocation, TargetDerivative, LerpRatio);
+	}
+	FVector InterpolateDerivative(float LerpRatio) const
+	{
+		return FMath::CubicInterpDerivative(StartLocation, StartDerivative, TargetLocation, TargetDerivative, LerpRatio);
+	}
+};
+
+// GoKartReplicationComponent.cpp
+void UGoKartReplicationComponent::ClientTick(float DeltaTime)
+{
+	TimeSinceLastUpdate += DeltaTime;
+	if (TimeBetweenUpdates < KINDA_SMALL_NUMBER) return;
+
+	// Clamp so a late update doesn't extrapolate past the target and snap back.
+	float LerpRatio = FMath::Clamp(TimeSinceLastUpdate / TimeBetweenUpdates, 0.f, 1.f);
+	FHermiteCubicSpline Spline = CreateSpline();
+
+	InterpolateLocation(Spline, LerpRatio);
+	InterpolateVelocity(Spline, LerpRatio);
+	InterpolateRotation(LerpRatio);
+}
+
+FHermiteCubicSpline UGoKartReplicationComponent::CreateSpline()
+{
+	FHermiteCubicSpline Spline;
+	Spline.StartLocation    = LastClientTransform.GetLocation();   // where the kart was drawn
+	Spline.TargetLocation   = ServerState.Transform.GetLocation(); // where the server says it is
+	Spline.StartDerivative  = LastClientVelocity * VelocityToDerivative();
+	Spline.TargetDerivative = ServerState.Velocity * VelocityToDerivative();
+	return Spline;
+}
+```
