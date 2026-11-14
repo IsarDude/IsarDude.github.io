@@ -1,0 +1,8 @@
+# Raw footage, music and generated output stay out of git
+public/footage/*
+!public/footage/.gitkeep
+public/music/*
+!public/music/.gitkeep
+analysis/
+out/
+.cache/

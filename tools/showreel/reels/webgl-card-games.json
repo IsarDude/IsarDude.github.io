@@ -1,0 +1,37 @@
+{
+  "title": "FreeCell · Spider · Solitaire",
+  "subtitle": "Competitive 1v1 browser card games for GameDuell.com",
+  "role": "Unity Game Programmer",
+  "tech": ["Unity", "C#", "WebGL", "Robotlegs", "DOTween"],
+  "accent": "#f5b942",
+  "fps": 30,
+  "introSeconds": 4,
+  "music": "music/all-of-my-pryces-main-version-46946-01-26.mp3",
+  "musicStart": 6.6667,
+  "musicVolume": 0.8,
+  "transition": "cut",
+  "transitionSeconds": 0.4,
+  "crop": { "x": 173, "y": 147, "width": 1574, "height": 885 },
+  "clips": [
+    { "src": "footage/WebGl/GameDuell _ FreeCell — Mozilla Firefox 2026-11-14 14-35-10.mp4", "from": 0.3, "to": 1.6333 },
+    { "src": "footage/WebGl/GameDuell _ FreeCell — Mozilla Firefox 2026-11-14 14-35-10.mp4", "from": 13, "to": 17, "caption": "Auto-complete promotes safe cards to foundations" },
+    { "src": "footage/WebGl/GameDuell _ FreeCell — Mozilla Firefox 2026-11-14 14-36-24.mp4", "from": 210.5, "to": 215.5, "speed": 1.25, "caption": "Multi-card sequence dragging" },
+    { "src": "footage/WebGl/GameDuell _ FreeCell — Mozilla Firefox 2026-11-14 14-36-24.mp4", "from": 223.6, "to": 227.8, "caption": "Card marking highlights every card of a rank" },
+
+    { "src": "footage/WebGl/GameDuell _ Spider — Mozilla Firefox 2026-11-14 14-09-16.mp4", "from": 19.1, "to": 23.3, "transition": "fade", "caption": "Spider: three variants, one codebase" },
+    { "src": "footage/WebGl/GameDuell _ Spider Light — Mozilla Firefox 2026-11-14 14-10-08.mp4", "from": 127.5, "to": 131.5, "crop": { "x": 355, "y": 147, "width": 1210, "height": 680 }, "caption": "Sequences can be grabbed anywhere in the stack" },
+    { "src": "footage/WebGl/GameDuell _ Spider Light — Mozilla Firefox 2026-11-14 14-10-08.mp4", "from": 143.5, "to": 149.0333, "crop": { "x": 355, "y": 147, "width": 1210, "height": 680 } },
+
+    { "src": "footage/WebGl/GameDuell _ Solitaire — Mozilla Firefox 2026-11-14 14-03-30.mp4", "from": 8, "to": 13.25, "speed": 1.25, "transition": "fade", "caption": "Runtime-switchable table themes and card backs" },
+    { "src": "footage/WebGl/GameDuell _ Solitaire — Mozilla Firefox 2026-11-14 14-03-30.mp4", "from": 15.2, "to": 19.2, "caption": "Both players get an identical encrypted card set" },
+    { "src": "footage/WebGl/GameDuell _ Solitaire — Mozilla Firefox 2026-11-14 14-03-30.mp4", "from": 224.5, "to": 230.5, "speed": 1.5, "crop": { "x": 267, "y": 147, "width": 1387, "height": 780 }, "caption": "Klondike-style engine, two variants" },
+    { "src": "footage/WebGl/GameDuell _ Solitaire — Mozilla Firefox 2026-11-14 14-03-30.mp4", "from": 316.4, "to": 320.6 }
+  ],
+  "outro": {
+    "name": "Lukas Fritsch",
+    "lines": ["Gameplay & Systems Programmer"],
+    "url": "github.com/IsarDude",
+    "seconds": 3.5333,
+    "transition": "fade"
+  }
+}

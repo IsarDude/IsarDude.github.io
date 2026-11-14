@@ -20,3 +20,7 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+## Showreels
+
+`tools/showreel/` is a separate Remotion project that renders portfolio showreels from `reels/<project>.json`. See its README for the workflow (`npm run analyze`, `npm run render`). Run its commands from that folder.

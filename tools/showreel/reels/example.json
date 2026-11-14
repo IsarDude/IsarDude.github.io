@@ -1,0 +1,22 @@
+{
+  "title": "Krazy Karts",
+  "subtitle": "Real-time multiplayer racing",
+  "role": "Gameplay & Network Programmer",
+  "tech": ["Unreal Engine 5", "C++", "Replication", "Client-side prediction"],
+  "accent": "#38bdf8",
+  "fps": 30,
+  "introSeconds": 3,
+  "transition": "fade",
+  "transitionSeconds": 0.4,
+  "clips": [
+    { "src": "footage/example/fractal-life.mp4", "from": 1.5, "to": 5.5, "caption": "Spline-based proxy interpolation" },
+    { "src": "footage/example/test-pattern.mp4", "from": 2, "to": 5, "caption": "Server reconciliation" },
+    { "src": "footage/example/fractal-life.mp4", "from": 6.5, "to": 10, "speed": 0.75 },
+    { "src": "footage/example/krazy-karts.svg", "duration": 2.5, "caption": "Data-driven kart setup" }
+  ],
+  "outro": {
+    "name": "Lukas Fritsch",
+    "lines": ["Gameplay & Systems Programmer"],
+    "url": "github.com/IsarDude"
+  }
+}
