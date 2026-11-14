@@ -27,6 +27,8 @@ repoUrl: ""
 - [Spider](https://www.gameduell.de/gd/s03.do?gametype=s2i&ref=gamespage_search#/s2i)
 - [Solitaire](https://www.gameduell.de/gd/s03.do?gametype=so3&ref=gamespage_search#/so3)
 
+<video src="/videos/gameduell-webgl-card-games/showreel.mp4" poster="/videos/gameduell-webgl-card-games/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of FreeCell, Spider and Solitaire gameplay"></video>
+
 ## What I Worked On
 
 ### Shared foundation
@@ -38,7 +40,7 @@ repoUrl: ""
 - **Auto-complete.** `AutomoveCommand` scans the relevant piles after each move and promotes safe cards to the foundations. It is animation-aware and chains consecutive automoves.
 - **Undo system.** Built on the framework's checkpoint-based `UndoLog`. Every completed player action passes through `UserMoveFinishedCommand`, which saves one checkpoint, so a logical move (for example a sequence move that also reveals a face-down card) reverts as a single unit. The log supports multi-step rollback and is cleared at game start so no state leaks between rounds.
 - **Legacy-protocol move history.** A `MoveHistory` logger serializes every action (moves, deals, undos, bonuses, finish events). The existing server, anti-cheat and replay systems can validate the new Unity clients unchanged.
-- **Shared-seed multiplayer deals.** An encrypted `GameSet` (deck, set ID, solver name, play time) gives both competing players an identical shuffle, which makes head-to-head scoring fair.
+- **Identical card sets for both players.** Both competing players receive the same encrypted `GameSet` (deck, set ID, solver name, play time), so they play the exact same deal, which makes head-to-head scoring fair.
 - **Hook-based animation/logic synchronization.** A generic `HookService` with `Animation`, `Movement` and `Default` hook types acts as a lightweight lock for async UI state. It defers game logic such as automoves, input, undo and turn transitions until in-flight DOTween animations finish.
 - **Scoring and bonuses.** Event-driven scoring decoupled from game logic via Robotlegs commands and events, covering foundation and clear-tableau bonuses, joker bonuses, reveal-card scoring and undo penalties.
 - **JS-to-Unity communication layer.** An `ICommunication` abstraction with a WebGL/JS-bridge implementation for production (`Init`, `StartGame`, `Resize`, `Abort`, `ForceGameStart`, `GameOption`), decoupling the embedding web page from game logic. An editor-only `UnityEditorFakeCommunication` replays the same message sequence locally, so each game can be built and tested without the backend.

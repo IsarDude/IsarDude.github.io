@@ -6,6 +6,12 @@
       "runtimeExecutable": "C:\\Portfolio\\scripts\\preview.bat",
       "runtimeArgs": [],
       "port": 4321
+    },
+    {
+      "name": "portfolio-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "4322"],
+      "port": 4322
     }
   ]
 }
