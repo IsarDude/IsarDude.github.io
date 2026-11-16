@@ -7,7 +7,7 @@ import { AbsoluteFill, Audio, interpolate, staticFile, useVideoConfig } from "re
 import { ClipView } from "./components/ClipView"
 import { Outro } from "./components/Outro"
 import { TitleCard } from "./components/TitleCard"
-import { timeline, type ReelSpec, type TransitionKind } from "./spec"
+import { scenes, timeline, type ReelSpec, type TransitionKind } from "./spec"
 import { BG, DEFAULT_ACCENT } from "./theme"
 
 const presentations: Record<Exclude<TransitionKind, "cut">, () => TransitionPresentation<Record<string, unknown>>> = {
@@ -23,7 +23,7 @@ const Music = ({ spec }: { spec: ReelSpec }) => {
     <Audio
       src={staticFile(spec.music!)}
       trimBefore={Math.round((spec.musicStart ?? 0) * fps)}
-      loop
+      loop={spec.musicLoop ?? true}
       volume={(f) =>
         level *
         interpolate(f, [0, 0.5 * fps, durationInFrames - 1.5 * fps, durationInFrames], [0, 1, 1, 0], {
@@ -41,21 +41,20 @@ export const Showreel = (spec: ReelSpec) => {
   const hasMusic = Boolean(spec.music) && full
   const { segments, transitions } = timeline(spec)
 
-  const scenes: ReactNode[] = []
-  if (full) {
-    scenes.push(<TitleCard title={spec.title} subtitle={spec.subtitle} role={spec.role} tech={spec.tech} accent={accent} />)
-  }
-  for (const clip of spec.clips) {
-    scenes.push(<ClipView clip={clip} accent={accent} hasMusic={Boolean(spec.music)} />)
-  }
-  if (full && spec.outro) {
-    scenes.push(<Outro {...spec.outro} accent={accent} />)
-  }
+  const views: ReactNode[] = scenes(spec).map((scene) => {
+    if (scene.type === "intro") {
+      return <TitleCard title={spec.title} subtitle={spec.subtitle} role={spec.role} tech={spec.tech} accent={accent} />
+    }
+    if (scene.type === "outro") {
+      return <Outro {...spec.outro!} accent={accent} />
+    }
+    return <ClipView clip={scene.clip} accent={accent} hasMusic={Boolean(spec.music)} />
+  })
 
   return (
     <AbsoluteFill style={{ backgroundColor: BG }}>
       <TransitionSeries>
-        {scenes.map((scene, i) => (
+        {views.map((scene, i) => (
           <Fragment key={i}>
             {transitions[i].kind !== "cut" && transitions[i].frames > 0 && (
               <TransitionSeries.Transition

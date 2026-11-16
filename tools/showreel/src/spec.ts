@@ -24,6 +24,27 @@ export type Clip = {
   crop?: Crop
   /** Transition into this clip, overriding the reel's */
   transition?: TransitionKind
+  /** Log lines that appear at their real time in the source video, e.g. a recorded message bus */
+  log?: { title?: string; lines: { at: number; text: string }[] }
+  /** Recoil curve simulated from a weapon's real spring values, with impulses at the real shot times */
+  springGraph?: SpringGraph
+  /** "cover" (default) fills the frame and crops; "contain" letterboxes, e.g. for side-by-side captures */
+  fit?: "cover" | "contain"
+  /** One label per side-by-side pane, left to right, shown above the picture */
+  labels?: string[]
+  /** Set by the render script for "contain": where the picture sits, as fractions of the frame height */
+  pane?: { top: number; height: number }
+}
+
+export type SpringGraph = {
+  label: string
+  stiffness: number
+  damping: number
+  strength: number
+  /** Share of each impulse applied as an instant offset; the rest becomes velocity */
+  kickRatio: number
+  /** Shot times in the source video, seconds */
+  shots: number[]
 }
 
 export type ReelSpec = {
@@ -37,10 +58,16 @@ export type ReelSpec = {
   height?: number
   /** Seconds the title card stays up */
   introSeconds?: number
+  /** Number of clips that play before the title card, e.g. a cold-open montage (default 0) */
+  introAt?: number
+  /** Transition into the title card when it follows clips (default cut) */
+  introTransition?: TransitionKind
   music?: string
   musicVolume?: number
   /** Skip into the music track, seconds */
   musicStart?: number
+  /** Loop the track if the reel outlasts it (default true). Set false when the track's own ending is timed to the reel */
+  musicLoop?: boolean
   transition?: TransitionKind
   transitionSeconds?: number
   /** Crop for every video clip, e.g. to cut browser bars out of a screen recording */
@@ -73,30 +100,40 @@ export const clipSeconds = (clip: Clip) => {
   return (clip.to - (clip.from ?? 0)) / (clip.speed ?? 1)
 }
 
+export type Scene =
+  | { type: "intro"; seconds: number; transition: TransitionKind }
+  | { type: "clip"; clip: Clip; seconds: number; transition: TransitionKind }
+  | { type: "outro"; seconds: number; transition: TransitionKind }
+
+/** Title card, clips and outro in playback order */
+export const scenes = (spec: ReelSpec): Scene[] => {
+  const full = spec.variant !== "loop"
+  const fallback = spec.transition ?? "fade"
+  const list: Scene[] = spec.clips.map((clip) => ({
+    type: "clip",
+    clip,
+    seconds: clipSeconds(clip),
+    transition: clip.transition ?? fallback,
+  }))
+  if (full) {
+    const at = Math.min(spec.introAt ?? 0, list.length)
+    list.splice(at, 0, { type: "intro", seconds: spec.introSeconds ?? 3, transition: spec.introTransition ?? "cut" })
+    if (spec.outro) list.push({ type: "outro", seconds: spec.outro.seconds ?? 3.5, transition: spec.outro.transition ?? fallback })
+  }
+  return list
+}
+
 /**
  * Frame lengths of every segment in order, and the transition into each one
  * (transitions[0] is always a cut, since nothing comes before the first segment)
  */
 export const timeline = (spec: ReelSpec) => {
   const fps = fpsOf(spec)
-  const full = spec.variant !== "loop"
   const toFrames = (s: number) => Math.max(1, Math.round(s * fps))
 
-  const segments: number[] = []
-  const kinds: TransitionKind[] = []
-  const fallback = spec.transition ?? "fade"
-  if (full) {
-    segments.push(toFrames(spec.introSeconds ?? 3))
-    kinds.push("cut")
-  }
-  for (const clip of spec.clips) {
-    segments.push(toFrames(clipSeconds(clip)))
-    kinds.push(clip.transition ?? fallback)
-  }
-  if (full && spec.outro) {
-    segments.push(toFrames(spec.outro.seconds ?? 3.5))
-    kinds.push(spec.outro.transition ?? fallback)
-  }
+  const list = scenes(spec)
+  const segments = list.map((s) => toFrames(s.seconds))
+  const kinds = list.map((s) => s.transition)
   kinds[0] = "cut"
 
   const wanted = toFrames(spec.transitionSeconds ?? 0.4)

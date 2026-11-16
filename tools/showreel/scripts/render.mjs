@@ -35,15 +35,21 @@ if (!existsSync(specPath)) {
 const spec = JSON.parse(readFileSync(specPath, "utf8"))
 
 // Catch bad paths and out-of-range times before Remotion spends minutes rendering
-const durations = new Map()
-const videoLength = (src) => {
-  if (!durations.has(src)) {
+const probes = new Map()
+const probe = (src) => {
+  if (!probes.has(src)) {
     const { stderr } = spawnSync(ffmpeg, ["-hide_banner", "-i", join("public", src)], { encoding: "utf8" })
     const d = stderr.match(/Duration: (\d+):(\d+):([\d.]+)/)
-    durations.set(src, d ? Number(d[1]) * 3600 + Number(d[2]) * 60 + Number(d[3]) : Infinity)
+    const size = stderr.match(/Video: .*?, (\d{2,5})x(\d{2,5})/)
+    probes.set(src, {
+      length: d ? Number(d[1]) * 3600 + Number(d[2]) * 60 + Number(d[3]) : Infinity,
+      width: size ? Number(size[1]) : undefined,
+      height: size ? Number(size[2]) : undefined,
+    })
   }
-  return durations.get(src)
+  return probes.get(src)
 }
+const videoLength = (src) => probe(src).length
 const problems = []
 for (const [i, clip] of spec.clips.entries()) {
   const where = `clip ${i + 1} (${clip.src})`
@@ -91,7 +97,8 @@ const stageClip = (clip, i) => {
   const from = clip.from ?? 0
   const crop = clip.crop ?? spec.crop
   const { mtimeMs, size } = statSync(source)
-  const key = createHash("sha1").update(JSON.stringify([clip.src, mtimeMs, size, from, clip.to, crop, width, height, fps])).digest("hex").slice(0, 12)
+  const contain = clip.fit === "contain"
+  const key = createHash("sha1").update(JSON.stringify([clip.src, mtimeMs, size, from, clip.to, crop, width, height, fps, contain || undefined])).digest("hex").slice(0, 12)
   const file = `clips/${key}.mp4`
   used.add(`${key}.mp4`)
 
@@ -99,8 +106,9 @@ const stageClip = (clip, i) => {
     console.log(`Cutting clip ${i + 1}: ${clip.src} ${from}s-${clip.to}s`)
     const filters = [
       crop && `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}`,
-      `scale=${width}:${height}:force_original_aspect_ratio=increase:flags=lanczos`,
-      `crop=${width}:${height}`,
+      ...(contain
+        ? [`scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos`, `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=0x07070b`]
+        : [`scale=${width}:${height}:force_original_aspect_ratio=increase:flags=lanczos`, `crop=${width}:${height}`]),
       `fps=${fps}`,
       "setsar=1",
     ].filter(Boolean)
@@ -117,8 +125,20 @@ const stageClip = (clip, i) => {
     if (result.status !== 0) process.exit(result.status ?? 1)
   }
 
+  // The cut clip starts at 0, so overlay times in source seconds move with it
   const { crop: _, ...rest } = clip
-  return { ...rest, src: file, from: 0, to: clip.to - from }
+  const staged = { ...rest, src: file, from: 0, to: clip.to - from }
+  if (clip.log) staged.log = { ...clip.log, lines: clip.log.lines.map((l) => ({ ...l, at: l.at - from })) }
+  if (clip.springGraph) staged.springGraph = { ...clip.springGraph, shots: clip.springGraph.shots.map((s) => s - from) }
+  if (contain) {
+    const sw = crop?.width ?? probe(clip.src).width
+    const sh = crop?.height ?? probe(clip.src).height
+    if (sw && sh) {
+      const h = Math.min(1, (width / sw) * sh / height)
+      staged.pane = { top: (1 - h) / 2, height: h }
+    }
+  }
+  return staged
 }
 
 const staged = { ...spec, crop: undefined, clips: spec.clips.map(stageClip) }

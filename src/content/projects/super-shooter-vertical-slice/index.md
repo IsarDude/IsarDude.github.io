@@ -17,6 +17,8 @@ image: "/images/projects/super-shooter.svg"
 - **Engine / Language:** Unreal Engine 5.7, C++ (with data-driven Blueprint content)
 - **Target Platform:** PC (Windows)
 
+<video src="/videos/super-shooter-vertical-slice/showreel.mp4" poster="/videos/super-shooter-vertical-slice/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of Super Shooter gameplay, weapons, recoil, AI and UI"></video>
+
 ## Systems Architected
 
 - **Modular Weapon Framework.** A strategy-pattern architecture instantiated per weapon from a `UGunDataAsset`. A weapon is composed of interchangeable behaviours. `FiringBehaviour`, `SpreadBehaviour`, `RecoilBehaviour` and `AimBehaviour` are created by a `UWeaponComponent` when a gun is equipped. A new gun (hitscan or projectile, automatic or semi-auto, tight or spread, snappy or floaty recoil, with or without an aiming aid) is assembled entirely from interchangeable components, each driving one aspect of the weapon's behaviour.

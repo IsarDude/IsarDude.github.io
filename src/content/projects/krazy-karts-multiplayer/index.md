@@ -17,6 +17,8 @@ image: "/images/projects/krazy-karts.svg"
 - **Engine / Language:** Unreal Engine 5.7, C++ (with data-driven Blueprint content)
 - **Target Platform:** PC (Windows)
 
+<video src="/videos/krazy-karts-multiplayer/showreel.mp4" poster="/videos/krazy-karts-multiplayer/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of Krazy Karts netcode: replication, client-side prediction, server reconciliation and spline interpolation"></video>
+
 ## Systems Architected
 
 - **Vehicle Movement Component** — force-based driving model computing throttle, air resistance, and rolling resistance to derive acceleration and torque-based steering, run identically on client and server for deterministic replay (`Source/KrazyKarts/GoKartMovementComponent.cpp`).

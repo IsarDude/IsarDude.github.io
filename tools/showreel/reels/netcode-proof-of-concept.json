@@ -1,0 +1,131 @@
+{
+  "title": "Krazy Karts",
+  "subtitle": "Netcode proof of concept: real-time multiplayer racing",
+  "role": "Personal project",
+  "tech": [
+    "Unreal Engine 5.7",
+    "C++",
+    "Multiplayer",
+    "Networking"
+  ],
+  "accent": "#f97316",
+  "fps": 30,
+  "introAt": 2,
+  "introSeconds": 2.6666666666666665,
+  "transition": "cut",
+  "transitionSeconds": 0.4,
+  "clips": [
+    {
+      "src": "footage/netcode proof of concept/01_hero_game-cam_following-other-kart_clean.mp4",
+      "from": 6.4,
+      "to": 8.4
+    },
+    {
+      "src": "footage/netcode proof of concept/07b_closing_top-down_two-karts-chasing_clean.mp4",
+      "from": 1.3,
+      "to": 2.6333
+    },
+    {
+      "src": "footage/netcode proof of concept/02_lag-sim-on_side-by-side_server-left_client-right_debug.mp4",
+      "from": 5,
+      "to": 8.3333,
+      "fit": "contain",
+      "labels": [
+        "Server",
+        "Client"
+      ],
+      "caption": "Hand-rolled replication of authoritative server state"
+    },
+    {
+      "src": "footage/netcode proof of concept/03d_AB_prediction_OFF-left_ON-right_lag200_debug.mp4",
+      "from": 2,
+      "to": 7.3333,
+      "fit": "contain",
+      "labels": [
+        "Prediction OFF",
+        "Prediction ON"
+      ],
+      "caption": "Client-side prediction"
+    },
+    {
+      "src": "footage/netcode proof of concept/03c_prediction-OFF-then-ON-at-7s_lag200_debug.mp4",
+      "from": 5.4,
+      "to": 9.4,
+      "crop": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900
+      }
+    },
+    {
+      "src": "footage/netcode proof of concept/04b_reconciliation_forced-desync-x2_hold1.2s-slower_lag200_debug.mp4",
+      "from": 0.6,
+      "to": 3.8,
+      "speed": 0.6,
+      "crop": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900
+      },
+      "caption": "Server reconciliation"
+    },
+    {
+      "src": "footage/netcode proof of concept/04_reconciliation_forced-desync-x3_hold0.6s_lag200_debug.mp4",
+      "from": 6,
+      "to": 8.6667,
+      "crop": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900
+      }
+    },
+    {
+      "src": "footage/netcode proof of concept/05h_AB_interp_LINEAR-left_HERMITE-right_same-moment_chase_debug.mp4",
+      "from": 2,
+      "to": 7.3333,
+      "fit": "contain",
+      "labels": [
+        "Linear lerp",
+        "Hermite cubic spline"
+      ],
+      "caption": "Hermite spline interpolation for remote karts"
+    },
+    {
+      "src": "footage/netcode proof of concept/05g_AB_interp_LINEAR-left_HERMITE-right_same-moment_top-down_debug.mp4",
+      "from": 3,
+      "to": 7,
+      "fit": "contain",
+      "labels": [
+        "Linear lerp",
+        "Hermite cubic spline"
+      ]
+    },
+    {
+      "src": "footage/netcode proof of concept/01b_hero_high-chase_two-karts_clean.mp4",
+      "from": 3.6,
+      "to": 6.2667
+    },
+    {
+      "src": "footage/netcode proof of concept/07b_closing_top-down_two-karts-chasing_clean.mp4",
+      "from": 5.4,
+      "to": 8.0667
+    }
+  ],
+  "outro": {
+    "name": "Lukas Fritsch",
+    "lines": [
+      "Custom replication · Client-side prediction · Server reconciliation",
+      "Unreal Engine 5.7 · C++ · Personal project"
+    ],
+    "url": "github.com/IsarDude",
+    "seconds": 3.3333333333333335,
+    "transition": "cut"
+  },
+  "music": "music/all-of-my-pryces-main-version-46946-01-26.mp3",
+  "musicVolume": 0.8,
+  "musicStart": 43.3063,
+  "musicLoop": false
+}

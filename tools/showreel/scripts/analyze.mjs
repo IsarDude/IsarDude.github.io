@@ -97,7 +97,9 @@ const fmt = (s) => {
   return `${m}:${(s - m * 60).toFixed(1).padStart(4, "0")}`
 }
 
-const files = readdirSync(footageDir)
+// Includes subfolders; sheet names flatten the folder into the file name
+const files = readdirSync(footageDir, { recursive: true })
+  .map((f) => f.replaceAll("\\", "/"))
   .filter((f) => VIDEO.test(f) || IMAGE.test(f))
   .filter((f) => !only || f.includes(only))
   .sort()
@@ -111,7 +113,7 @@ if (zoom) {
     const path = join(footageDir, file)
     const from = Number(option("from") ?? 0)
     const to = Math.min(Number(option("to") ?? Infinity), probe(path).duration)
-    const sheets = contactSheets(path, basename(file, extname(file)), from, to, Number(option("every") ?? 1))
+    const sheets = contactSheets(path, file.slice(0, -extname(file).length).replaceAll("/", "__"), from, to, Number(option("every") ?? 1))
     console.log(`${file} ${fmt(from)}-${fmt(to)}:\n${sheets.map((s) => `  analysis/${project}/zoom/${s}`).join("\n")}`)
   }
   process.exit(0)
@@ -129,7 +131,7 @@ for (const file of files) {
     continue
   }
 
-  const name = basename(file, extname(file))
+  const name = file.slice(0, -extname(file).length).replaceAll("/", "__")
   const info = probe(path)
   console.log(`video  ${file}  ${fmt(info.duration)}  ${info.width}x${info.height}@${info.fps}  analysing...`)
   const { cuts, busiest } = motion(path)

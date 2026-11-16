@@ -1,0 +1,274 @@
+{
+  "title": "Super Shooter",
+  "subtitle": "Third-person team-deathmatch shooter vertical slice",
+  "role": "Personal project",
+  "tech": [
+    "Unreal Engine 5.7",
+    "C++",
+    "Gameplay Systems",
+    "AI"
+  ],
+  "accent": "#ef4444",
+  "fps": 30,
+  "introAt": 4,
+  "introSeconds": 2.7333333333333334,
+  "transition": "cut",
+  "transitionSeconds": 0.4,
+  "clips": [
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 365.75,
+      "volume": 0.3,
+      "to": 366.4167
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 91.3,
+      "to": 92,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 49.45,
+      "to": 50.1167,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 271.35,
+      "to": 272.05,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/AllWeaponsInTestScene.mp4",
+      "from": 7.4,
+      "to": 9.4333,
+      "crop": {
+        "x": 408,
+        "y": 210,
+        "width": 986,
+        "height": 555
+      },
+      "caption": "Strategy-pattern weapon framework",
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/AllWeaponsInTestScene.mp4",
+      "from": 13.4,
+      "to": 15.4333,
+      "crop": {
+        "x": 408,
+        "y": 210,
+        "width": 986,
+        "height": 555
+      },
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/AllWeaponsInTestScene.mp4",
+      "from": 19.3,
+      "to": 22.0333,
+      "crop": {
+        "x": 408,
+        "y": 210,
+        "width": 986,
+        "height": 555
+      },
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/WeaponDataAsset.mp4",
+      "from": 43.3,
+      "to": 46.0333,
+      "crop": {
+        "x": 0,
+        "y": 150,
+        "width": 1280,
+        "height": 720
+      },
+      "caption": "A new gun is a new data asset"
+    },
+    {
+      "src": "footage/SuperShooter/WeaponDataAsset.mp4",
+      "from": 52,
+      "to": 54.0333,
+      "crop": {
+        "x": 0,
+        "y": 150,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "src": "footage/SuperShooter/WeaponDataAsset.mp4",
+      "from": 189.3,
+      "to": 191.35,
+      "speed": 0.5,
+      "crop": {
+        "x": 345,
+        "y": 137,
+        "width": 1112,
+        "height": 626
+      },
+      "caption": "Spring-damper recoil"
+    },
+    {
+      "src": "footage/SuperShooter/WeaponDataAsset.mp4",
+      "from": 193.3,
+      "to": 195.35,
+      "speed": 0.5,
+      "crop": {
+        "x": 345,
+        "y": 137,
+        "width": 1112,
+        "height": 626
+      },
+      "springGraph": {
+        "label": "SpringRecoilBehaviour · DA_Shotgun",
+        "stiffness": 12,
+        "damping": 8,
+        "strength": 30,
+        "kickRatio": 0.1,
+        "shots": [
+          193.633,
+          194.5
+        ]
+      }
+    },
+    {
+      "src": "footage/SuperShooter/AllWeaponsInTestScene.mp4",
+      "from": 24.2,
+      "to": 25.5667,
+      "speed": 0.5,
+      "crop": {
+        "x": 560,
+        "y": 230,
+        "width": 880,
+        "height": 495
+      },
+      "caption": "Live trajectory preview for arcing projectiles"
+    },
+    {
+      "src": "footage/SuperShooter/AllWeaponsInTestScene.mp4",
+      "from": 25.6,
+      "to": 26.9667,
+      "crop": {
+        "x": 345,
+        "y": 137,
+        "width": 1112,
+        "height": 626
+      },
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/WeaponDataAsset.mp4",
+      "from": 196.2,
+      "to": 197.55,
+      "speed": 0.5,
+      "crop": {
+        "x": 560,
+        "y": 230,
+        "width": 880,
+        "height": 495
+      }
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 150.4,
+      "to": 151.7667,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/AI_Behaviour_Clips/00_full_showcase.mp4",
+      "from": 0.5,
+      "to": 2.5667,
+      "caption": "Perception-driven combat AI"
+    },
+    {
+      "src": "footage/SuperShooter/AI_Behaviour_Clips/00_full_showcase.mp4",
+      "from": 13,
+      "to": 15.0333
+    },
+    {
+      "src": "footage/SuperShooter/AI_Behaviour_Clips/00_full_showcase.mp4",
+      "from": 30.8,
+      "to": 32.8333
+    },
+    {
+      "src": "footage/SuperShooter/AI_Behaviour_Clips/00_full_showcase.mp4",
+      "from": 20.3,
+      "to": 22.3667
+    },
+    {
+      "src": "footage/SuperShooter/UI/UI_01_mainmenu_match_endscreen_raw.mp4",
+      "from": 16,
+      "to": 17.3667,
+      "caption": "Tag-driven, message-decoupled UI (MVVM)",
+      "log": {
+        "title": "FGameplayMessageSubsystem broadcasts (recorded)",
+        "lines": [
+          {
+            "at": 16.34,
+            "text": "Level.Request.Load      Level.Map.SkiFi1"
+          }
+        ]
+      }
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 69.6,
+      "to": 71.6333,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 297.1,
+      "to": 299.8333,
+      "volume": 0.3
+    },
+    {
+      "src": "footage/SuperShooter/UI/UI_01_mainmenu_match_endscreen_raw.mp4",
+      "from": 198.05,
+      "to": 200.0833,
+      "log": {
+        "title": "FGameplayMessageSubsystem broadcasts (recorded)",
+        "lines": [
+          {
+            "at": 194.2,
+            "text": "Gameplay.Score.Changed  TeamScores=(6,14)"
+          },
+          {
+            "at": 198.08,
+            "text": "Gameplay.Player.Died"
+          },
+          {
+            "at": 198.08,
+            "text": "Gameplay.Score.Changed  TeamScores=(6,15)"
+          },
+          {
+            "at": 198.08,
+            "text": "Ui.Message.Open         Ui.Gameplay.EndScreen"
+          }
+        ]
+      }
+    },
+    {
+      "src": "footage/SuperShooter/GameplayRound2 and 3.mp4",
+      "from": 16.96,
+      "to": 18.6,
+      "speed": 0.6
+    }
+  ],
+  "outro": {
+    "name": "Lukas Fritsch",
+    "lines": [
+      "Unreal Engine 5.7 · C++ · Personal project"
+    ],
+    "url": "github.com/IsarDude",
+    "seconds": 3.4,
+    "transition": "cut"
+  },
+  "music": "music/race-heat-abbynoise-main-version-46669-02-19.mp3",
+  "musicVolume": 0.8,
+  "musicStart": 37.1582
+}
