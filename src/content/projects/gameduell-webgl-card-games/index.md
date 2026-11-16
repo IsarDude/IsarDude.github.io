@@ -1,6 +1,6 @@
 ---
-title: "GameDuell WebGL Card Games — FreeCell, Spider & Solitaire"
-summary: "Three competitive browser card games for GameDuell.com, built in Unity WebGL on a shared Robotlegs framework, staying byte-compatible with the existing server protocol."
+title: "GameDuell WebGL Card Games: FreeCell, Spider & Solitaire"
+summary: "Three competitive browser card games for GameDuell.com, built in Unity WebGL on a shared Robotlegs framework. The new clients stay byte-compatible with the existing server protocol."
 date: "2026-10-29"
 draft: false
 tags:
@@ -21,7 +21,7 @@ repoUrl: ""
 - **Games:** FreeCell, Spider (Spider, Spider Pro, Spider Light) and Solitaire (SO3 and SH2 variants)
 - **Tech:** Unity, C#, Robotlegs (MVCS), in-house ClassicFramework, DOTween, WebGL JS bridge
 
-**FreeCell**, **Spider** and **Solitaire** are three card games for GameDuell.com. Each is a competitive 1v1 game in which two players race to clear the same shuffled deck. Spider and Solitaire are Unity rewrites of legacy Haxe/Flash clients. All three run in the browser on desktop and mobile. They share one architecture and one in-house framework, so I treat them as a single project. All three are live on GameDuell:
+FreeCell, Spider and Solitaire are three card games for GameDuell.com. Each is a competitive 1v1 game in which two players race to clear the same shuffled deck. Spider and Solitaire are Unity rewrites of legacy Haxe/Flash clients. The games run in desktop and mobile browsers and share one architecture and one in-house framework, so I treat them as a single project. All three are live on GameDuell:
 
 - [FreeCell](https://www.gameduell.de/gd/s03.do?gametype=fr2&ref=gamespage_search#/fr2)
 - [Spider](https://www.gameduell.de/gd/s03.do?gametype=s2i&ref=gamespage_search#/s2i)
@@ -29,7 +29,7 @@ repoUrl: ""
 
 <video src="/videos/gameduell-webgl-card-games/showreel.mp4" poster="/videos/gameduell-webgl-card-games/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of FreeCell, Spider and Solitaire gameplay"></video>
 
-## What I Worked On
+## What I worked on
 
 ### Shared foundation
 
@@ -39,7 +39,7 @@ repoUrl: ""
 - **Drag-and-drop interaction system.** Pointer-driven dragging via Begin/Drag/End commands, with multi-card sequence dragging, drop-zone validation, hit-area and drop-area recalculation, highlight and interactable-state management, double-click interactions, and animated snap-back on invalid drops.
 - **Auto-complete.** `AutomoveCommand` scans the relevant piles after each move and promotes safe cards to the foundations. It is animation-aware and chains consecutive automoves.
 - **Undo system.** Built on the framework's checkpoint-based `UndoLog`. Every completed player action passes through `UserMoveFinishedCommand`, which saves one checkpoint, so a logical move (for example a sequence move that also reveals a face-down card) reverts as a single unit. The log supports multi-step rollback and is cleared at game start so no state leaks between rounds.
-- **Legacy-protocol move history.** A `MoveHistory` logger serializes every action (moves, deals, undos, bonuses, finish events). The existing server, anti-cheat and replay systems can validate the new Unity clients unchanged.
+- **Legacy-protocol move history.** A `MoveHistory` logger serializes every action (moves, deals, undos, bonuses, finish events) in the legacy protocol format, so the existing server, anti-cheat and replay systems can validate the new Unity clients without changes.
 - **Identical card sets for both players.** Both competing players receive the same encrypted `GameSet` (deck, set ID, solver name, play time), so they play the exact same deal, which makes head-to-head scoring fair.
 - **Hook-based animation/logic synchronization.** A generic `HookService` with `Animation`, `Movement` and `Default` hook types acts as a lightweight lock for async UI state. It defers game logic such as automoves, input, undo and turn transitions until in-flight DOTween animations finish.
 - **Scoring and bonuses.** Event-driven scoring decoupled from game logic via Robotlegs commands and events, covering foundation and clear-tableau bonuses, joker bonuses, reveal-card scoring and undo penalties.
@@ -54,7 +54,7 @@ repoUrl: ""
 
 ### Spider
 
-- **Three variants, one codebase.** Spider, Spider Pro and Spider Light differ only through config-based rule differences.
+- **Three variants, one codebase.** Spider, Spider Pro and Spider Light differ only in their rule config.
 - **Stock preview.** Spider Pro's "peek before dealing" UI, built on the same hit-area pattern as the drag-and-drop challenge below.
 
 ### Solitaire
@@ -78,13 +78,13 @@ repoUrl: ""
 
 `AutomoveCommand` uses this to re-run only after all `Movement` hooks clear. The move history, and therefore the server-synced protocol, advances in lockstep with what is rendered, regardless of frame rate or animation duration.
 
-**What it provides.** Simulation time is decoupled from presentation time without blocking the main thread or polling. It is a reusable, type-safe synchronization primitive (generic over an enum) that any view can hook into without the logic layer knowing about animation internals. It is resilient to variable timing, which matters in a competitive game where move-history fidelity affects server-side score validation between two opponents.
+**The result.** Game logic waits for the presentation without blocking the main thread or polling. The hook service is generic over an enum, so any view can hook into it and the logic layer never needs to know how an animation works. Animation timing can vary freely, which matters here because the server validates both opponents' scores against the move history.
 
 ### Precise drag-and-drop on an overlapping fan-of-cards layout
 
 **The problem.** In Spider the 10 tableau piles sit edge-to-edge, and at zoomed-out layouts each card is only a thin sliver. With default Unity UI raycasting this caused two usability failures:
 
-- **Overlapping hit areas.** Neighboring piles' colliders can overlap at the shared border, so a drop near one pile's right edge may register on the next pile, causing wrong and frustrating moves.
+- **Overlapping hit areas.** Neighboring piles' colliders can overlap at the shared border, so a drop near one pile's right edge may register on the next pile, and the cards land somewhere the player didn't intend.
 - **Dead zones on concealed cards.** A pile's bottom unconcealed (draggable) card is often a thin strip on top of a wall of face-down cards. The natural hit area for starting a drag is tiny, which makes dragging sequences fiddly, especially for touch input.
 
 **The solution: a two-part dynamic hit-area system.**
@@ -92,9 +92,9 @@ repoUrl: ""
 - **Drag-start hit-area extension** (`UpdateCardHitAreasCommand` + `IncreaseCardHitAreaEvent`). Instead of the literal card bounds, the system finds the bottom-most unconcealed card in each tableau pile and enlarges its draggable region to cover the concealed cards beneath it. A sequence can be grabbed from anywhere in that visual stack.
 - **Conflict-aware drop-target extension** (`UpdateHitAreasCommand` / `UpdateDropAreasCommand` + `IncreasePileHitAreaEvent`). When a drag begins, every tableau and joker pile's `PileGuard` is asked whether it is a valid drop target for the dragged sequence. Only valid targets get an enlarged hit area (`HitAreaIncreaseType.LeftAndRight`), and invalid ones are marked non-interactable. This alone prevents drops onto piles that couldn't accept the cards.
 
-The hard part is the **neighbor-conflict resolution**. If two adjacent piles are both valid, they can't both expand into the gap between them, or the ambiguous-overlap bug returns with larger zones. A single left-to-right sweep over the ordered pile list adjusts each pile's growth direction based on its neighbor. If pile `i-1` is a valid target, pile `i` may only grow rightward, and `i-1`'s rightward growth is revoked (downgraded to `HeightOnly` or `Left`). The expanded zones can never touch. It's one O(n) pass over at most 10 piles, re-run on every drag start and update.
+The hard part is resolving conflicts between neighbors. If two adjacent piles are both valid, they can't both expand into the gap between them, or the ambiguous-overlap bug returns with larger zones. A single left-to-right sweep over the ordered pile list adjusts each pile's growth direction based on its neighbor. If pile `i-1` is a valid target, pile `i` may only grow rightward, and `i-1`'s rightward growth is revoked (downgraded to `HeightOnly` or `Left`). The expanded zones can never touch. It's one O(n) pass over at most 10 piles, re-run on every drag start and update.
 
-**What it provides.** Drops only land on piles that can legally accept them, and sequences are easy to grab even on touch screens. The approach combines spatial reasoning within Unity's raycast/EventSystem model with game-rule awareness, and the enum-driven pattern (`None/Left/Right/HeightOnly/LeftAndRight`) is reused for Spider Pro's stock preview.
+**The result.** Drops only land on piles that can legally take them, and sequences are easy to grab even on a touch screen. The same enum-driven pattern (`None/Left/Right/HeightOnly/LeftAndRight`) also drives Spider Pro's stock preview.
 
 ### Making a generic undo system reverse game-specific side effects
 
@@ -112,4 +112,4 @@ The hard part is the **neighbor-conflict resolution**. If two adjacent piles are
 - The checkpoint is saved in `UserMoveFinishedCommand`, which runs only after hooks confirm that all animations and automove cascades for the move have settled. One checkpoint equals one player-perceived move.
 - The single-undo rule is declarative: `undoLog.clearAfterUndo = true` is set once at game start, so a second `Undo()` has nothing left to roll back, and game code keeps no extra state.
 
-**What it provides.** A clean separation between a reusable, game-agnostic engine system and the game-specific rules layered on top, a pattern that transfers to any undo, replay or rollback feature shared across modes.
+**The result.** The framework's `UndoLog` stays game-agnostic and reusable, and every Solitaire-specific rule lives in the commands that call it.

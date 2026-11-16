@@ -1,6 +1,6 @@
 ---
-title: "Super Shooter — Third-Person Shooter Vertical Slice"
-summary: "Third-person team-deathmatch shooter vertical slice in Unreal Engine 5 with a data-driven weapon framework, perception-driven AI, and a message-decoupled MVVM UI system."
+title: "Super Shooter: Third-Person Shooter Vertical Slice"
+summary: "Third-person team-deathmatch vertical slice in Unreal Engine 5 with a data-driven weapon framework, perception-driven bot AI and a message-based MVVM UI."
 date: "2026-10-24"
 draft: false
 tags:
@@ -19,19 +19,18 @@ image: "/images/projects/super-shooter.svg"
 
 <video src="/videos/super-shooter-vertical-slice/showreel.mp4" poster="/videos/super-shooter-vertical-slice/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of Super Shooter gameplay, weapons, recoil, AI and UI"></video>
 
-## Systems Architected
+## Systems I built
 
-- **Modular Weapon Framework.** A strategy-pattern architecture instantiated per weapon from a `UGunDataAsset`. A weapon is composed of interchangeable behaviours. `FiringBehaviour`, `SpreadBehaviour`, `RecoilBehaviour` and `AimBehaviour` are created by a `UWeaponComponent` when a gun is equipped. A new gun (hitscan or projectile, automatic or semi-auto, tight or spread, snappy or floaty recoil, with or without an aiming aid) is assembled entirely from interchangeable components, each driving one aspect of the weapon's behaviour.
-- **Perception-Driven Combat AI.** `AShooterAiController` drives bots through Unreal's sight sense and a Behavior Tree (patrol, strafe-and-shoot, flee, investigate the last known position). Target acquisition is team-aware (`IsHostile`), reacts to damage from unseen attackers, and releases the trigger the moment line of sight is lost, so combat stays reactive to what the AI can actually see rather than to raw distance checks.
-- **Tag-Driven, Message-Decoupled UI (MVVM).** `UUiServiceSubsystem` pushes CommonUI widgets onto menu/HUD stacks purely from Tag lookups against a `UUICatalog` data asset, triggered by `FGameplayMessageSubsystem` broadcasts rather than direct references. Gameplay code never touches a widget class; ViewModels (`MainMenuViewModel`, `EndMatchViewModel`, `ScoreViewModel`, `TimerViewModel`) are the only bridge between the two. Game model changes, such as score updates, are broadcast as gameplay messages, so the HUD and the end-of-match overlay react to them without the game model ever knowing a widget exists.
-- **Async Level Streaming Service.** `ULevelLoaderSubsystem` listens for tagged "load level" messages, resolves them through a `ULevelRegistryDataAsset` lookup table, and streams the target map via `FStreamableManager` on a soft object path, keeping level references entirely data-driven.
+- **Modular weapon framework.** Each weapon is built from a `UGunDataAsset` using the strategy pattern. When a gun is equipped, `UWeaponComponent` creates its `FiringBehaviour`, `SpreadBehaviour`, `RecoilBehaviour` and `AimBehaviour`, and each of these controls one aspect of how the weapon behaves. A new gun (hitscan or projectile, automatic or semi-auto, tight or spread, snappy or floaty recoil, with or without an aiming aid) is put together entirely from these parts.
+- **Perception-driven combat AI.** `AShooterAiController` drives bots through Unreal's sight sense and a Behavior Tree (patrol, strafe-and-shoot, flee, investigate the last known position). Target acquisition is team-aware (`IsHostile`), reacts to damage from unseen attackers, and releases the trigger the moment line of sight is lost, so bots react to what they can actually see, not to raw distance checks.
+- **Tag-driven, message-decoupled UI (MVVM).** `UUiServiceSubsystem` pushes CommonUI widgets onto menu/HUD stacks purely from tag lookups against a `UUICatalog` data asset, triggered by `FGameplayMessageSubsystem` broadcasts rather than direct references. Gameplay code never touches a widget class; ViewModels (`MainMenuViewModel`, `EndMatchViewModel`, `ScoreViewModel`, `TimerViewModel`) are the only bridge between the two. Game model changes, such as score updates, are broadcast as gameplay messages, so the HUD and the end-of-match overlay react to them without the game model ever knowing a widget exists.
+- **Async level streaming service.** `ULevelLoaderSubsystem` listens for tagged "load level" messages, resolves them through a `ULevelRegistryDataAsset` lookup table, and streams the target map via `FStreamableManager` on a soft object path, so level references live entirely in data.
 
-
-## Engineering Challenges
+## Engineering challenges
 
 ### 1. One weapon component, any gun: the strategy pattern in practice
 
-**Problem:** A shooter needs many guns that differ along several independent axes — hitscan vs. projectile, automatic vs. semi-auto, tight vs. spread, snappy vs. floaty recoil, with or without an aiming aid. Subclassing `AGun` per weapon (`AutomaticHitscanSpreadGun`, `SemiAutoProjectileGun`, …) explodes combinatorially, duplicates logic, and forces a C++ change and recompile for every new gun.
+**Problem:** A shooter needs many guns that differ along several independent axes: hitscan vs. projectile, automatic vs. semi-auto, tight vs. spread, snappy vs. floaty recoil, with or without an aiming aid. Subclassing `AGun` per weapon (`AutomaticHitscanSpreadGun`, `SemiAutoProjectileGun`, …) explodes combinatorially, duplicates logic, and forces a C++ change and recompile for every new gun.
 
 **Solution:** Each axis becomes its own *strategy* behind a small abstract interface, and the gun is reduced to a data asset that names which strategy to use for each one:
 
@@ -108,7 +107,7 @@ void UWeaponComponent::SetupWeaponBehaviors(AGun* NewGun)
 }
 ```
 
-From then on the component is completely ignorant of what kind of gun it is holding. `Shoot()` just runs whichever strategies exist, and the same code path serves a hitscan rifle and a grenade launcher:
+From then on the component doesn't know what kind of gun it is holding. `Shoot()` just runs whichever strategies exist, and the same code path serves a hitscan rifle and a grenade launcher:
 
 ```cpp
 void UWeaponComponent::Shoot()
@@ -122,7 +121,7 @@ void UWeaponComponent::Shoot()
 }
 ```
 
-Two details make the pattern pay off. First, strategies that need to cooperate do it through their interfaces instead of knowing about each other's concrete classes: the projectile preview aim behaviour receives the firing behaviour in `Initialize` and asks it for the launch direction, so the preview can never disagree with the real shot (see challenge 3). Second, the base classes provide safe no-op defaults, so a gun with no spread or no aim aid just leaves that slot empty. The result: a new weapon is a new data asset, and a genuinely new *behaviour* (the spring recoil in challenge 2, for example) is one new class that every existing gun can opt into without being touched.
+Two details make this work. Strategies that need to cooperate talk through their interfaces, not through each other's concrete classes: the projectile preview aim behaviour receives the firing behaviour in `Initialize` and asks it for the launch direction, so the preview can never disagree with the real shot (see challenge 3). And the base classes provide safe no-op defaults, so a gun with no spread or no aim aid just leaves that slot empty. A new weapon is therefore just a new data asset, and a new kind of *behaviour* (the spring recoil in challenge 2, for example) is one new class that any existing gun can opt into without changes.
 
 ### 2. Recoil that settles naturally instead of snapping back
 
@@ -154,7 +153,7 @@ FRotator UUSpringRecoilBehaviour::GetCurrentRecoil(float DeltaTime)
 }
 ```
 
-The second half of the problem is *how* the offset reaches the player's view. If recoil were written as an absolute rotation it would fight the player's mouse input. Instead, `UWeaponComponent::HandleRecoil` feeds only the **frame-to-frame delta** of the spring into the controller's rotation:
+The second half of the problem is *how* the offset reaches the player's view. If recoil were written as an absolute rotation it would fight the player's mouse input. Instead, `UWeaponComponent::HandleRecoil` feeds only the frame-to-frame delta of the spring into the controller's rotation:
 
 ```cpp
 void UWeaponComponent::HandleRecoil(float DeltaTime)
@@ -168,7 +167,7 @@ void UWeaponComponent::HandleRecoil(float DeltaTime)
 }
 ```
 
-Because the spring always returns toward zero, the sum of all deltas returns the view to where the player was aiming, while player input stays additive on top the whole time — the camera kicks up and eases back down without ever overriding the player.
+Because the spring always returns toward zero, the deltas add up to nothing over time and the view comes back to where the player was aiming. Player input stays additive on top the whole time, so the camera kicks up and eases back down without ever overriding the player's aim.
 
 ### 3. A live "will this land here?" preview for arcing projectiles
 
