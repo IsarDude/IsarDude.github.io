@@ -21,23 +21,23 @@ image: "/images/projects/krazy-karts-multiplayer/cover.jpg"
 
 ## Systems I built
 
-- **Vehicle movement component.** A force-based driving model that computes throttle, air resistance and rolling resistance to get acceleration, plus torque-based steering. It runs identically on client and server, so moves replay deterministically (`Source/KrazyKarts/GoKartMovementComponent.cpp`).
-- **Custom replication component.** Replaces Unreal's default movement replication (`SetReplicateMovement(false)`) with a hand-written `UActorComponent` that replicates the authoritative server state and drives behavior per network role: authority, autonomous proxy or simulated proxy (`Source/KrazyKarts/Vehicle/GoKartReplicationComponent.cpp`).
-- **Client-side prediction and server reconciliation.** The client simulates each move immediately and queues it as unacknowledged. When corrected state arrives through `OnRep_ServerState`, it replays the moves the server hasn't acknowledged yet, so the player feels no input latency and the client stays in sync with the server.
+- **Vehicle movement component.** A force-based driving model that computes throttle, air resistance and rolling resistance to get acceleration, plus torque-based steering. It runs identically on client and server, so moves replay deterministically.
+- **Custom replication component.** Replaces Unreal's default movement replication with a hand-written actor component that replicates the authoritative server state and drives behavior per network role: authority, autonomous proxy or simulated proxy.
+- **Client-side prediction and server reconciliation.** The client simulates each move immediately and queues it as unacknowledged. When corrected state arrives from the server, it replays the moves the server hasn't acknowledged yet, so the player feels no input latency and the client stays in sync with the server.
 - **Remote proxy interpolation.** Hermite cubic spline interpolation (position and velocity, with Slerp for rotation) between periodic server snapshots, so other players' karts move smoothly even though network updates are infrequent.
 
 ## Engineering challenge
 
-**Problem:** Remote karts (simulated proxies) only receive position and velocity updates a few times per second (`SetNetUpdateFrequency`). Snapping to each new server transform made them jitter and teleport. The locally controlled kart, on the other hand, had to respond to input instantly despite the round trip to the authoritative server.
+**Problem:** Remote karts (simulated proxies) only receive position and velocity updates a few times per second. Snapping to each new server transform made them jitter and teleport. The locally controlled kart, on the other hand, had to respond to input instantly despite the round trip to the authoritative server.
 
 **Solution:** I split the problem by network role. The locally controlled kart uses client-side prediction: input is simulated immediately and stored in an unacknowledged move queue. When the server's authoritative state comes back, the client resets to it and replays only the moves the server hasn't acknowledged yet, which corrects drift without a visible snap. For remote karts I build a Hermite cubic spline from the last known and the newly received transform and velocity, so position and velocity both stay continuous across the interpolation window. Linear interpolation between two raw positions had caused jitter whenever velocity changed between snapshots, and the spline removed it.
 
 ### 1. Predict locally, send every move
 
-Each tick the autonomous proxy builds a timestamped move, simulates it immediately, stores it in the unacknowledged queue, and sends it to the server. The server runs the exact same `SimulateMove`, so both sides stay deterministic. Because the client is untrusted, `Server_SendMove_Validate` rejects moves from clients that try to run ahead of server time.
+Each tick the autonomous proxy builds a timestamped move, simulates it immediately, stores it in the unacknowledged queue, and sends it to the server. The server runs the exact same move simulation, so both sides stay deterministic. Because the client is untrusted, the server's move validation rejects moves from clients that try to run ahead of server time.
 
 ```cpp
-// GoKartReplicationComponent.cpp — TickComponent
+// Every tick, on the locally controlled kart
 if (LocalRole == ROLE_AutonomousProxy)
 {
 	FGoKartMove LastMove = GoKartMovementComponent->GetLastMove();
@@ -60,7 +60,7 @@ bool UGoKartReplicationComponent::Server_SendMove_Validate(FGoKartMove Move)
 
 ### 2. Reconcile by replaying unacknowledged moves
 
-When the authoritative state replicates back (`OnRep_ServerState`), the client snaps to the server's transform and velocity, discards every move the server has already processed, and re-simulates the rest on top. The player's input never waits on the network, and any drift is corrected without a visible rubber-band.
+When the authoritative state replicates back, the client snaps to the server's transform and velocity, discards every move the server has already processed, and re-simulates the rest on top. The player's input never waits on the network, and any drift is corrected without a visible rubber-band.
 
 ```cpp
 void UGoKartReplicationComponent::AutonomousProxy_OnRep_ServerState()
@@ -100,7 +100,6 @@ void UGoKartReplicationComponent::ClearAcknowledgedMoves(const FGoKartMove& Last
 For other players' karts, each snapshot starts a new interpolation segment. The segment begins at where the kart was *drawn* (not where the last snapshot said it was), so there is no pop when a packet arrives. Velocities are fed in as tangents, so speed stays continuous across segments. Rotation uses a Slerp.
 
 ```cpp
-// GoKartReplicationComponent.h
 struct FHermiteCubicSpline
 {
 	FVector StartLocation, StartDerivative, TargetLocation, TargetDerivative;
@@ -115,7 +114,6 @@ struct FHermiteCubicSpline
 	}
 };
 
-// GoKartReplicationComponent.cpp
 void UGoKartReplicationComponent::ClientTick(float DeltaTime)
 {
 	TimeSinceLastUpdate += DeltaTime;
