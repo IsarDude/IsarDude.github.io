@@ -12,7 +12,8 @@ export async function GET(context: Context) {
 
   const items = [...posts, ...projects]
 
-  items.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  const dateOf = (item: (typeof items)[number]) => ("date" in item.data ? item.data.date : undefined)
+  items.sort((a, b) => (dateOf(b)?.getTime() ?? 0) - (dateOf(a)?.getTime() ?? 0))
 
   return rss({
     title: SITE.TITLE,
@@ -21,7 +22,7 @@ export async function GET(context: Context) {
     items: items.map((item) => ({
       title: item.data.title,
       description: item.data.summary,
-      pubDate: item.data.date,
+      pubDate: dateOf(item),
       link: item.slug.startsWith("blog")
         ? `/blog/${item.slug}/`
         : `/projects/${item.slug}/`,

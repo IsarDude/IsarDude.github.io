@@ -56,10 +56,10 @@ export const SOCIALS: Socials = [
     HREF: "mailto:gd@fritsch-lukas.de",
   },
   {
-    NAME: "Github",
-    ICON: "github",
-    TEXT: "IsarDude",
-    HREF: "https://github.com/IsarDude"
+    NAME: "LinkedIn",
+    ICON: "linkedin",
+    TEXT: "Lukas Fritsch",
+    HREF: "https://www.linkedin.com/in/lukas-fritsch-1590531a7/"
   },
 ]
 

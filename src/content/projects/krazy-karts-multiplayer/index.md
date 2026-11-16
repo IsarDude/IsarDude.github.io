@@ -1,7 +1,7 @@
 ---
-title: "Krazy Karts: Real-Time Multiplayer Racing (Proof of Concept)"
+title: "Racer - Real-Time Multiplayer (Proof of Concept)"
 summary: "Proof of concept for real-time multiplayer racing in Unreal Engine 5, with custom replication, client-side prediction, server reconciliation and spline interpolation for remote karts."
-date: "2026-05-20"
+order: 5
 draft: false
 tags:
   - Unreal Engine
@@ -10,14 +10,14 @@ tags:
   - Multiplayer
   - Networking
   - Personal Project
-image: "/images/projects/krazy-karts.svg"
+image: "/images/projects/krazy-karts-multiplayer/cover.jpg"
 ---
 
 - **Project Type:** Personal project (not professional work)
 - **Engine / Language:** Unreal Engine 5.7, C++ (with data-driven Blueprint content)
 - **Target Platform:** PC (Windows)
 
-<video src="/videos/krazy-karts-multiplayer/showreel.mp4" poster="/videos/krazy-karts-multiplayer/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of Krazy Karts netcode: replication, client-side prediction, server reconciliation and spline interpolation"></video>
+<video src="/videos/krazy-karts-multiplayer/showreel.mp4" poster="/videos/krazy-karts-multiplayer/poster.jpg" width="1920" height="1080" controls preload="metadata" playsinline class="w-full h-auto rounded-lg" aria-label="Showreel of Racer netcode: replication, client-side prediction, server reconciliation and spline interpolation"></video>
 
 ## Systems I built
 

@@ -1,7 +1,7 @@
 ---
 title: "GameDuell WebGL Card Games: FreeCell, Spider & Solitaire"
 summary: "Three competitive browser card games for GameDuell.com, built in Unity WebGL on a shared Robotlegs framework. The new clients stay byte-compatible with the existing server protocol."
-date: "2026-10-29"
+order: 3
 draft: false
 tags:
   - Unity
@@ -9,7 +9,7 @@ tags:
   - WebGL
   - Robotlegs
   - Professional Project
-image: "/images/projects/webgl-unity.svg"
+image: "/images/projects/gameduell-webgl-card-games/cover.jpg"
 demoUrl: ""
 repoUrl: ""
 ---

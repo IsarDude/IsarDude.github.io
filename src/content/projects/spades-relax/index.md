@@ -1,7 +1,7 @@
 ---
 title: "Spades Relax"
 summary: "Mobile multiplayer Spades for iOS and Android at GameDuell. I owned a skippable round result flow across client and backend, an event-driven celebration system, a designer-facing effects sequencer with a custom editor tool, and a dynamic round result screen."
-date: "2026-09-30"
+order: 1
 draft: false
 tags:
   - Unity

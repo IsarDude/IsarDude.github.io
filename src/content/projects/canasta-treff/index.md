@@ -1,7 +1,7 @@
 ---
 title: "Canasta - Fun & Friends"
 summary: "Mobile multiplayer Canasta for iOS and Android at GameDuell. I joined for the polishing phase and worked on round result animations, player statistics in Firebase, sound effects and integration tests."
-date: "2026-09-29"
+order: 4
 draft: false
 tags:
   - Unity

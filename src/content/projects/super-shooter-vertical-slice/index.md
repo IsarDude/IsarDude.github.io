@@ -1,7 +1,7 @@
 ---
 title: "Super Shooter: Third-Person Shooter Vertical Slice"
 summary: "Third-person team-deathmatch vertical slice in Unreal Engine 5 with a data-driven weapon framework, perception-driven bot AI and a message-based MVVM UI."
-date: "2026-10-24"
+order: 2
 draft: false
 tags:
   - Unreal Engine
@@ -10,7 +10,7 @@ tags:
   - Gameplay Systems
   - AI
   - Personal Project
-image: "/images/projects/super-shooter.svg"
+image: "/images/projects/super-shooter-vertical-slice/cover.jpg"
 ---
 
 - **Project Type:** Personal project (not professional work)

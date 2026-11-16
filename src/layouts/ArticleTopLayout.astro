@@ -8,7 +8,8 @@ type Props = {
 
 const { entry } = Astro.props
 const { collection, data, body } = entry
-const { title, summary, date } = data
+const { title, summary } = data
+const date = "date" in data ? data.date : undefined
 
 const demoUrl = collection === "projects" ? data.demoUrl : null
 const repoUrl = collection === "projects" ? data.repoUrl : null
@@ -25,7 +26,7 @@ const repoUrl = collection === "projects" ? data.repoUrl : null
     </div>
   </a>
   <div class="flex flex-wrap text-sm uppercase mt-12 gap-3 opacity-75">
-    {collection !== "projects" &&
+    {date &&
       <div class="flex items-center gap-2">
         <svg class="size-5 stroke-current">
           <use href="/ui.svg#calendar"/>

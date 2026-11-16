@@ -8,7 +8,8 @@ type Props = {
 
 export default function ArrowCard({ entry, pill }: Props) {
   const image = "image" in entry.data ? entry.data.image : undefined
-  const showDate = entry.collection !== "projects"
+  const date = "date" in entry.data ? entry.data.date : undefined
+  const showDate = date !== undefined
 
   return (
     <a href={`/${entry.collection}/${entry.slug}`} class="group p-4 gap-3 flex items-center border rounded-lg hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 transition-colors duration-300 ease-in-out">
@@ -29,7 +30,7 @@ export default function ArrowCard({ entry, pill }: Props) {
             }
             {showDate &&
               <div class="text-sm uppercase">
-                {formatDate(entry.data.date)}
+                {date && formatDate(date)}
               </div>
             }
           </div>
