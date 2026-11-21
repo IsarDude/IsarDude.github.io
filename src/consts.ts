@@ -52,8 +52,8 @@ export const SOCIALS: Socials = [
   {
     NAME: "Email",
     ICON: "email",
-    TEXT: "info@fritsch-lukas.de",
-    HREF: "mailto:info@fritsch-lukas.de",
+    TEXT: "contact@fritsch-lukas.de",
+    HREF: "mailto:contact@fritsch-lukas.de",
   },
   {
     NAME: "LinkedIn",
